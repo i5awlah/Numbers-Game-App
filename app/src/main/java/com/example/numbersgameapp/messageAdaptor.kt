@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_row.view.*
 
-class numberAdaptor(private val numbers: List<String>): RecyclerView.Adapter<numberAdaptor.ItemViewHolder>() {
+class messageAdaptor(private val messages: ArrayList<String>): RecyclerView.Adapter<messageAdaptor.ItemViewHolder>() {
     class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     }
 
@@ -21,12 +21,12 @@ class numberAdaptor(private val numbers: List<String>): RecyclerView.Adapter<num
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        var number = numbers[position]
+        var number = messages[position]
         holder.itemView.apply {
             tvNumber.text = number
         }
     }
 
-    override fun getItemCount() = numbers.size
+    override fun getItemCount() = messages.size
 
 }
