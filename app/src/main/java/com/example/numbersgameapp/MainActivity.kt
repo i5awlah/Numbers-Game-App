@@ -1,10 +1,12 @@
 package com.example.numbersgameapp
 
+import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,27 +20,37 @@ class MainActivity : AppCompatActivity() {
     lateinit var guessField: EditText
     lateinit var messages: ArrayList<String>
 
-    var randomNumber = 0
-    var numberOfGuess = 3
+    private var randomNumber = 0
+    private var numberOfGuess = 3
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        messages = ArrayList()
+
         myLayout = findViewById(R.id.clMain)
 
-        randomNumber = Random.nextInt(11)
+        myRV = findViewById(R.id.rvMain)
+        myRV.adapter = messageAdaptor(messages)
+        myRV.layoutManager = LinearLayoutManager(this)
 
         guessField = findViewById(R.id.etGuessField)
         guessButton = findViewById(R.id.btnGuess)
         guessButton.setOnClickListener { addMessage() }
 
-        messages = ArrayList()
 
-        myRV = findViewById(R.id.rvMain)
-        myRV.adapter = messageAdaptor(messages)
-        myRV.layoutManager = LinearLayoutManager(this)
+        startGame()
+
     }
+
+    private fun startGame() {
+        randomNumber = Random.nextInt(11)
+        numberOfGuess = 3
+        messages.clear()
+        myRV.adapter?.notifyDataSetChanged()
+    }
+
     private fun addMessage() {
         val userGuess = guessField.text.toString()
         guessField.text.clear()
@@ -57,9 +69,11 @@ class MainActivity : AppCompatActivity() {
                     }
 
                 }
-                else {
+                if(numberOfGuess == 0) {
                     messages.add("The Answer is: $randomNumber")
                     messages.add("Game over!")
+
+                    showAlert()
                 }
             }
             else {
@@ -79,4 +93,28 @@ class MainActivity : AppCompatActivity() {
             false
         }
     }
+
+    private fun showAlert(){
+        // first we create a variable to hold an AlertDialog builder
+        val dialogBuilder = AlertDialog.Builder(this)
+
+        // here we set the message of our alert dialog
+        dialogBuilder.setMessage("Do you want to play again?")
+            // positive button text and action
+            .setPositiveButton("Yes", DialogInterface.OnClickListener {
+                    dialog, id -> startGame()
+            })
+            // negative button text and action
+            .setNegativeButton("No", DialogInterface.OnClickListener {
+                    dialog, id -> dialog.cancel()
+            })
+        // create dialog box
+        val alert = dialogBuilder.create()
+        // set title for alert dialog box
+        alert.setTitle("New Game")
+        // show alert dialog
+        alert.show()
+    }
+
+
 }
