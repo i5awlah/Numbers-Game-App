@@ -2,6 +2,7 @@ package com.example.numbersgameapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -49,28 +50,32 @@ class MainActivity : AppCompatActivity() {
                     numberOfGuess--
                     if (userGuess.toInt() == randomNumber) {
                         messages.add("You got it!")
-                        myRV.adapter?.notifyDataSetChanged()
                     }
                     else {
                         messages.add("You guessed $userGuess")
                         messages.add("You have $numberOfGuess guesses left")
-                        myRV.adapter?.notifyDataSetChanged()
                     }
 
                 }
+                else {
+                    messages.add("The Answer is: $randomNumber")
+                    messages.add("Game over!")
+                }
             }
             else {
-                Snackbar.make(myLayout, "\"Please enter numbers only.\"", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(myLayout, "Please enter numbers only", Snackbar.LENGTH_LONG).show()
             }
         }
         else {
-            Snackbar.make(myLayout, "You didn't enter anything!.", Snackbar.LENGTH_LONG).show()
+            Snackbar.make(myLayout, "You didn't enter anything!", Snackbar.LENGTH_LONG).show()
         }
+        myRV.adapter?.notifyDataSetChanged()
     }
     private fun checkNumber(userNumber: String): Boolean {
         return try {
+            userNumber.toInt()
             true
-        } catch (e: NumberFormatException) {
+        } catch (e: Exception) {
             false
         }
     }
